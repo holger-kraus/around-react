@@ -16,5 +16,4 @@
   height: 100%;
   background-color: rgba(0, 0, 0, .5);
   opacity: 0;
-  transition: visibility .5s, opacity .5s ease-in-out;
 }

@@ -1,10 +1,59 @@
+# Across the U.S. - React version
+
+## Web Development course at Yandex Practicum
+I am participating in an excellent web development course at [Yandex Practicum](https://practicum.yandex.com/) right now.
+You get a very good introduction into many web development topics on their learning platform. After mastering the
+according lessons, you have to proof your newly acquired skills in your own projects.
+
+## My fourth project
+This is my first project that I have implemented as part of the course. The main focus is to migrate the existing
+"Across the U.S." project, that was just plain HTML, CSS and Javascript to React.
+
+### Functionality
+
+The website is a profile page. It contains a set of photographies that can be liked by users. The page also contains
+an edit functionality where the user can change the name and the about me information. The edit form pops up in a modal
+dialogue. Furthermore, the user can add further images by providing their URIs. He also can remove images again from the
+photo grid. If he clicks on one of the photo cards, the photo enlarges and is displayed as the main element on the
+screen.
+
+### Technologies
+
+In detail the following technologies and methods have been used:
+* Semantic HTML like
+    * sections
+    * header
+    * footer
+    * main area
+    * headlines
+    * paragraphs
+    * lists
+    * links
+* BEM Methodology (Block, Element, Modifier)
+    * How to organize CSS сlasses
+    * How to organize CSS files
+* CSS techniques like
+    * box model
+    * flexbox
+    * positioning
+    * media queries
+* Javascript
+    * working with the DOM
+    * reading and updating values in the DOM
+
+### Have a look!
+
+The page is installed on Github Pages [here](https://holger-kraus.github.io/web_project_4/index.html).
+
+### How to run it
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+#### Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+##### `npm start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -12,12 +61,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `npm test`
+##### `npm test`
 
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+##### `npm run build`
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -27,7 +76,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+##### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -37,32 +86,11 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+##### Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+ 
