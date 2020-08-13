@@ -41,6 +41,10 @@ In detail the following technologies and methods have been used:
     * React components
     * React hooks
 
+ ### Have a look!
+
+The page is installed on Github Pages [here](https://holger-kraus.github.io/around-react/).
+
 ### How to run it
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
