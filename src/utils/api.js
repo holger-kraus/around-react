@@ -41,17 +41,21 @@ class Api {
         return this._sendRequestWithBody(cardsUri, body, "POST");
     }
 
+    changeLikeCardStatus(cardId, isLiked) {
+        return isLiked ? this._addLike(cardId) : this._deleteLike(cardId);
+    }
+
     deleteCard(cardId) {
         const cardUri = this.baseUrl.concat("/cards/").concat(cardId);
         return this._sendRequestWithoutBody(cardUri, "DELETE");
     }
 
-    addLike(cardId) {
+    _addLike(cardId) {
         const likeUri = this.baseUrl.concat("/cards/likes/").concat(cardId);
         return this._sendRequestWithoutBody(likeUri, "PUT");
     }
 
-    deleteLike(cardId) {
+    _deleteLike(cardId) {
         const likeUri = this.baseUrl.concat("/cards/likes/").concat(cardId);
         return this._sendRequestWithoutBody(likeUri, "DELETE");
     }
