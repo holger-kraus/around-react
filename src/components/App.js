@@ -3,6 +3,9 @@ import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
 import PopupWithForm from "./PopupWithForm";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
 import api from "../utils/api";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
@@ -14,15 +17,52 @@ function App() {
     const [isEditAvatarPopupOpen, setIssEditAvatarPopupOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
     const [currentUser, setCurrentUser] = useState({});
+    const [cards, setCards] = useState([]);
 
     React.useEffect(() => {
         api.getProfile().then((myProfile) => {
-            console.log("MyProfile: " + myProfile);
             setCurrentUser(myProfile);
         }).catch((err) => {
             console.log(err);
         });
     }, []);
+
+    React.useEffect(() => {
+        api.getInitialCards().then((cards) => {
+                let initialCards = [];
+                cards.forEach((card) => {
+                    initialCards.push(card);
+                });
+                setCards(initialCards);
+            }
+        ).catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
+    function handleCardLike(card) {
+        // Check one more time if this card was already liked
+        const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+        // Send a request to the API and getting the updated card data
+        api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+            // Create a new array based on the existing one and putting a new card into it
+            const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+            // Update the state
+            setCards(newCards);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    function handleCardDelete(deletedCard) {
+        api.deleteCard(deletedCard._id).then(() => {
+            const remainingCards = cards.filter((card) => card._id !== deletedCard._id)
+            setCards(remainingCards);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
     function handleEditAvatarClick() {
         setIssEditAvatarPopupOpen(true);
@@ -47,50 +87,46 @@ function App() {
         setIsAddPlacePopupOpen(false);
     }
 
+    function handleUpdateUser({name, about}) {
+        api.updateProfile(name, about).then((updateProfile) => {
+            setCurrentUser(updateProfile);
+            setIsEditProfilePopupOpen(false);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    function handleUpdateAvatar({avatar}) {
+        api.updateProfilePicture(avatar).then((updateProfile) => {
+            setCurrentUser(updateProfile);
+            setIssEditAvatarPopupOpen(false);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    function handleAddPlace({title, link}) {
+        api.addCard(title, link).then((newCard) => {
+            setCards([...cards, newCard]);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
     return (
         <div className="page">
             <CurrentUserContext.Provider value={currentUser}>
                 <Header/>
-                <Main onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick}
-                      onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick}/>
+                <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick}
+                      onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike}
+                      onCardDelete={handleCardDelete}/>
                 <Footer/>
-                <PopupWithForm name="profile" title="Edit profile" isOpen={isEditProfilePopupOpen}
-                               onClose={closeAllPopups}>
-                    <label className="form__label form__label_title" htmlFor="profile-name-input">
-                        <input id="profile-name-input" type="text"
-                               name="name" className="form__field form__field_title"
-                               minLength="2" maxLength="40" pattern="[a-zA-Z-\s]*" required/>
-                        <span id="profile-name-input-error" className="form__field-error"></span>
-                    </label>
-                    <label htmlFor="profile-aboutme-input" className="form__label form__label_detail">
-                        <input id="profile-aboutme-input" type="text" name="aboutme"
-                               className="form__field form__field_detail"
-                               minLength="2" maxLength="200" required/>
-                        <span id="profile-aboutme-input-error" className="form__field-error"></span>
-                    </label>
-                </PopupWithForm>
-                <PopupWithForm name="place" title="New place" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}>
-                    <label className="form__label form__label_title" htmlFor="place-title-input">
-                        <input id="place-title-input" type="text" name="image-title"
-                               className="form__field form__field_title" placeholder="Title" minLength="2"
-                               maxLength="40" required/>
-                        <span id="place-title-input-error" className="form__field-error"></span>
-                    </label>
-                    <label className="form__label form__label_detail" htmlFor="place-link-input">
-                        <input id="place-link-input" type="url" name="image-link"
-                               className="form__field form__field_detail" placeholder="Image Link"
-                               required/>
-                        <span id="place-link-input-error" className="form__field-error"></span>
-                    </label>
-                </PopupWithForm>
-                <PopupWithForm name="avatarpic" title="Change Userpic" isOpen={isEditAvatarPopupOpen}
-                               onClose={closeAllPopups}>
-                    <label className="form__label form__label_title" htmlFor="avatarpic-link-input">
-                        <input id="avatarpic-link-input" type="url" name="avatarpic-link"
-                               className="form__field form__field_title" placeholder="Image Link" required/>
-                        <span id="avatarpic-link-input-error" className="form__field-error"></span>
-                    </label>
-                </PopupWithForm>
+                <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}
+                                  onUpdateUser={handleUpdateUser}/>
+                <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}
+                               onAddPlace={handleAddPlace}/>
+                <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}
+                                 onUpdateAvatar={handleUpdateAvatar}/>
                 <PopupWithForm name="confirmation" title="Are you sure?" isOpen={false} onClose={closeAllPopups}/>
                 <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
             </CurrentUserContext.Provider>

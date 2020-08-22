@@ -6,7 +6,7 @@ function PopupWithForm(props) {
     return (
         <section className={`overlay overlay_${props.name} ${isOpenClass}`}>
             <div className={`overlay__container overlay__container_${props.name}`}>
-                <form action="#" className="form" noValidate>
+                <form action="#" className="form" noValidate onSubmit={props.onSubmit}>
                     <h2 className="form__title">{props.title}</h2>
                     {props.children}
                     <button type="submit" className="form__save" >Create</button>
