@@ -2,22 +2,26 @@ import React, {useState} from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
-import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
+import ConfirmationPopup from "./ConfirmationPopup";
 import api from "../utils/api";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
+import {submitSave, submitSaving, submitEdit, submitCreate, submitCreating, submitDelete, submitDeleting} from "../utils/utils";
 
 function App() {
 
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIssEditAvatarPopupOpen] = useState(false);
+    const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
+    const [deletedCard, setDeletedCard] = useState(null);
     const [currentUser, setCurrentUser] = useState({});
     const [cards, setCards] = useState([]);
+    const [submitText, setSubmitText] = useState("");
 
     React.useEffect(() => {
         api.getProfile().then((myProfile) => {
@@ -56,24 +60,35 @@ function App() {
     }
 
     function handleCardDelete(deletedCard) {
+        setSubmitText(submitDeleting);
         api.deleteCard(deletedCard._id).then(() => {
             const remainingCards = cards.filter((card) => card._id !== deletedCard._id)
             setCards(remainingCards);
+            setIsConfirmationPopupOpen(false);
         }).catch((err) => {
             console.log(err);
         });
     }
 
     function handleEditAvatarClick() {
+        setSubmitText(submitSave);
         setIssEditAvatarPopupOpen(true);
     }
 
     function handleEditProfileClick() {
+        setSubmitText(submitSave);
         setIsEditProfilePopupOpen(true);
     }
 
     function handleAddPlaceClick() {
+        setSubmitText(submitCreate);
         setIsAddPlacePopupOpen(true);
+    }
+
+    function confirmDelete(card) {
+        setDeletedCard(card);
+        setSubmitText(submitDelete);
+        setIsConfirmationPopupOpen(true);
     }
 
     function handleCardClick(card) {
@@ -88,6 +103,7 @@ function App() {
     }
 
     function handleUpdateUser({name, about}) {
+        setSubmitText(submitSaving);
         api.updateProfile(name, about).then((updateProfile) => {
             setCurrentUser(updateProfile);
             setIsEditProfilePopupOpen(false);
@@ -97,6 +113,7 @@ function App() {
     }
 
     function handleUpdateAvatar({avatar}) {
+        setSubmitText(submitSaving);
         api.updateProfilePicture(avatar).then((updateProfile) => {
             setCurrentUser(updateProfile);
             setIssEditAvatarPopupOpen(false);
@@ -106,8 +123,10 @@ function App() {
     }
 
     function handleAddPlace({title, link}) {
+        setSubmitText(submitCreating);
         api.addCard(title, link).then((newCard) => {
             setCards([...cards, newCard]);
+            setIsAddPlacePopupOpen(false);
         }).catch((err) => {
             console.log(err);
         });
@@ -119,15 +138,15 @@ function App() {
                 <Header/>
                 <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick}
                       onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike}
-                      onCardDelete={handleCardDelete}/>
+                      onCardDelete={confirmDelete}/>
                 <Footer/>
-                <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}
+                <EditProfilePopup isOpen={isEditProfilePopupOpen} submitText={submitText} onClose={closeAllPopups}
                                   onUpdateUser={handleUpdateUser}/>
-                <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}
+                <AddPlacePopup isOpen={isAddPlacePopupOpen} submitText={submitText} onClose={closeAllPopups}
                                onAddPlace={handleAddPlace}/>
-                <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}
+                <EditAvatarPopup isOpen={isEditAvatarPopupOpen} submitText={submitText} onClose={closeAllPopups}
                                  onUpdateAvatar={handleUpdateAvatar}/>
-                <PopupWithForm name="confirmation" title="Are you sure?" isOpen={false} onClose={closeAllPopups}/>
+                <ConfirmationPopup isOpen={isConfirmationPopupOpen} onClose={closeAllPopups} onConfirmation={handleCardDelete} confirmedObject={deletedCard} submitText={submitText}/>
                 <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
             </CurrentUserContext.Provider>
         </div>
